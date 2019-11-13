@@ -61,52 +61,59 @@ namespace AttitudeTests
         {
             var me = Child.IsBorn();
 
-            me.Life.PathOf(
-                Life.Alive
-                    .LeadsTo(Life.Dead)
-                    .When(me.TimeHasCome));
-
             Assert.IsTrue(
                 me.Life.Status.Equals(Life.Alive));
 
-            me.GetsOld().LifeUpdate();
+            me.LifeUpdate();
 
             Assert.IsTrue(
                 me.Life.Status.Equals(Life.Dead));           
         }
 
+        private interface IExpires
+        {
+            bool Expired();
+        }
+
         private class Child
         {
-            private bool dying;
+            private int UpdateTicks = 0;
 
-            public void LifeUpdate() => Life.Update();
+            public void LifeUpdate()
+            {
+                UpdateTicks++;
+                Life.Update();
+            }
 
             public MappedState<Life> Life { get; private set; }
 
             public static Child IsBorn()
             {              
-                return new Child
+                var @this = new Child
                 {
-                    Life = MappedState<Life>.Construct(),
-                    dying = false,
+                    Life = MappedState<Life>.Construct(Node2Tests.Life.Alive)
                 };
+
+                @this.Life = MappedState<Life>.Construct(Node2Tests.Life.Alive)
+                    .PathOf(
+                        Node2Tests.Life.Alive
+                            .LeadsTo(Node2Tests.Life.Dead)
+                            .When(@this.Expired))
+                    .PathOf(
+                        Node2Tests.Life.Dead
+                            .LeadsTo(Node2Tests.Life.Undead));
+
+                return @this;
             }
 
-            public Child GetsOld()
-            {
-                dying = true;
-                return this;
-            }
-
-            public bool TimeHasCome() { return dying; }
+            public bool Expired() { return UpdateTicks > 0; }
         }
 
         public enum Life
         {
             Alive,
             Dead,
+            Undead
         }
     }
-
-
 }

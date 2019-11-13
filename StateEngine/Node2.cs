@@ -59,9 +59,9 @@ namespace StateEngine
             Paths = new List<UnidirectionalPath<T>>();
         }
 
-        public static PathMap<T> Construct(T initialState)
+        public static PathMap<T> Construct()
         {
-            return new PathMap<T>(initialState);
+            return new PathMap<T>();
         }
 
         public void AddPath(T origin, T destination, Func<bool> condition = null)
