@@ -16,3 +16,17 @@ C:\Users\mlopes\Source\Repos\Temper\AttitudeTests\obj\Debug\AttitudeTests.csproj
 C:\Users\mlopes\Source\Repos\Temper\AttitudeTests\obj\Debug\AttitudeTests.csproj.CopyComplete
 C:\Users\mlopes\Source\Repos\Temper\AttitudeTests\obj\Debug\AttitudeTests.dll
 C:\Users\mlopes\Source\Repos\Temper\AttitudeTests\obj\Debug\AttitudeTests.pdb
+C:\Source\Repos\Temper\AttitudeTests\obj\Debug\AttitudeTests.csprojAssemblyReference.cache
+C:\Source\Repos\Temper\AttitudeTests\obj\Debug\AttitudeTests.dll
+C:\Source\Repos\Temper\AttitudeTests\obj\Debug\AttitudeTests.pdb
+C:\Source\Repos\Temper\AttitudeTests\bin\Debug\AttitudeTests.dll
+C:\Source\Repos\Temper\AttitudeTests\bin\Debug\AttitudeTests.pdb
+C:\Source\Repos\Temper\AttitudeTests\bin\Debug\Attitude.dll
+C:\Source\Repos\Temper\AttitudeTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
+C:\Source\Repos\Temper\AttitudeTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+C:\Source\Repos\Temper\AttitudeTests\bin\Debug\StateEngine.dll
+C:\Source\Repos\Temper\AttitudeTests\bin\Debug\Attitude.pdb
+C:\Source\Repos\Temper\AttitudeTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
+C:\Source\Repos\Temper\AttitudeTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+C:\Source\Repos\Temper\AttitudeTests\obj\Debug\AttitudeTests.csproj.CopyComplete
+C:\Source\Repos\Temper\AttitudeTests\bin\Debug\StateEngine.pdb

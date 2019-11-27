@@ -57,7 +57,7 @@ namespace AttitudeTests
         }
 
         [TestMethod]
-        public void MyTimeShallCome()
+        public void NowImFeelingZombified()
         {
             var me = Child.IsBorn();
 
@@ -67,7 +67,14 @@ namespace AttitudeTests
             me.LifeUpdate();
 
             Assert.IsTrue(
-                me.Life.Status.Equals(Life.Dead));           
+                me.Life.Status.Equals(Life.Dead));
+
+            me.SummonedByLichKing = true;
+
+            me.LifeUpdate();
+
+            Assert.IsTrue(
+                me.Life.Status.Equals(Life.Undead));
         }
 
         private interface IExpires
@@ -85,14 +92,13 @@ namespace AttitudeTests
                 Life.Update();
             }
 
+            public bool SummonedByLichKing { get; set; }
+
             public MappedState<Life> Life { get; private set; }
 
             public static Child IsBorn()
             {              
-                var @this = new Child
-                {
-                    Life = MappedState<Life>.Construct(Node2Tests.Life.Alive)
-                };
+                var @this = new Child();
 
                 @this.Life = MappedState<Life>.Construct(Node2Tests.Life.Alive)
                     .PathOf(
@@ -101,7 +107,8 @@ namespace AttitudeTests
                             .When(@this.Expired))
                     .PathOf(
                         Node2Tests.Life.Dead
-                            .LeadsTo(Node2Tests.Life.Undead));
+                            .LeadsTo(Node2Tests.Life.Undead)
+                            .When(() => @this.SummonedByLichKing));
 
                 return @this;
             }

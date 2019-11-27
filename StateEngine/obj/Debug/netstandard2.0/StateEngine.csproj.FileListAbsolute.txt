@@ -7,3 +7,11 @@ C:\Users\mlopes\Source\Repos\Temper\StateEngine\obj\Debug\netstandard2.0\StateEn
 C:\Users\mlopes\Source\Repos\Temper\StateEngine\obj\Debug\netstandard2.0\StateEngine.AssemblyInfo.cs
 C:\Users\mlopes\Source\Repos\Temper\StateEngine\obj\Debug\netstandard2.0\StateEngine.dll
 C:\Users\mlopes\Source\Repos\Temper\StateEngine\obj\Debug\netstandard2.0\StateEngine.pdb
+C:\Source\Repos\Temper\StateEngine\bin\Debug\netstandard2.0\StateEngine.deps.json
+C:\Source\Repos\Temper\StateEngine\bin\Debug\netstandard2.0\StateEngine.dll
+C:\Source\Repos\Temper\StateEngine\bin\Debug\netstandard2.0\StateEngine.pdb
+C:\Source\Repos\Temper\StateEngine\obj\Debug\netstandard2.0\StateEngine.AssemblyInfoInputs.cache
+C:\Source\Repos\Temper\StateEngine\obj\Debug\netstandard2.0\StateEngine.AssemblyInfo.cs
+C:\Source\Repos\Temper\StateEngine\obj\Debug\netstandard2.0\StateEngine.dll
+C:\Source\Repos\Temper\StateEngine\obj\Debug\netstandard2.0\StateEngine.pdb
+C:\Source\Repos\Temper\StateEngine\obj\Debug\netstandard2.0\StateEngine.csprojAssemblyReference.cache

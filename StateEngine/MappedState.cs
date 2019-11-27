@@ -1,4 +1,6 @@
-﻿namespace StateEngine
+﻿using System.Linq;
+
+namespace StateEngine
 {
     public class MappedState<T> where T : System.Enum
     {
@@ -25,7 +27,9 @@
 
         public void Update()
         {
-            foreach (var path in this.paths.Paths)
+            var possibleDestinations = new List<UnidirectionalPath<T>>
+
+            foreach (var path in this.paths.Paths.Where(n => n.Origin.Equals(Status)))
             {
                 if (path.Condition.Invoke())
                 {
