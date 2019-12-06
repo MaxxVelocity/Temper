@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace StateEngine
 {
@@ -27,7 +28,7 @@ namespace StateEngine
 
         public void Update()
         {
-            var possibleDestinations = new List<UnidirectionalPath<T>>
+            var possibleDestinations = new List<UnidirectionalPath<T>>();
 
             foreach (var path in this.paths.Paths.Where(n => n.Origin.Equals(Status)))
             {
