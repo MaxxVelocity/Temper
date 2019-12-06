@@ -7,3 +7,10 @@ C:\Users\mlopes\Source\Repos\Temper\Temper\obj\Debug\netstandard2.0\Attitude.Ass
 C:\Users\mlopes\Source\Repos\Temper\Temper\obj\Debug\netstandard2.0\Attitude.AssemblyInfo.cs
 C:\Users\mlopes\Source\Repos\Temper\Temper\obj\Debug\netstandard2.0\Attitude.dll
 C:\Users\mlopes\Source\Repos\Temper\Temper\obj\Debug\netstandard2.0\Attitude.pdb
+C:\Source\Repos\Temper\Temper\bin\Debug\netstandard2.0\Attitude.deps.json
+C:\Source\Repos\Temper\Temper\bin\Debug\netstandard2.0\Attitude.dll
+C:\Source\Repos\Temper\Temper\bin\Debug\netstandard2.0\Attitude.pdb
+C:\Source\Repos\Temper\Temper\obj\Debug\netstandard2.0\Attitude.AssemblyInfoInputs.cache
+C:\Source\Repos\Temper\Temper\obj\Debug\netstandard2.0\Attitude.AssemblyInfo.cs
+C:\Source\Repos\Temper\Temper\obj\Debug\netstandard2.0\Attitude.dll
+C:\Source\Repos\Temper\Temper\obj\Debug\netstandard2.0\Attitude.pdb

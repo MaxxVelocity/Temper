@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace StateEngine
 {
-    public class Node2<T>
+    public class StatusMapNode<T>
     {
         private readonly T Enum;
 
-        public Node2(T @type)
+        public StatusMapNode(T @type)
         {
             Enum = type;
         }
@@ -23,13 +23,46 @@ namespace StateEngine
             this.Enum = typeof(T);
         }
 
-        public Node2<T> Construct(T type)
+        public StatusMapNode<T> Construct(T type)
         {
-            var product = new Node2<T>(type);
+            var product = new StatusMapNode<T>(type);
 
             return product;
         }
     }
+
+    public class PathMap<T> where T : System.Enum
+    {
+        public List<UnidirectionalPath<T>> Paths { get; }
+        
+        private PathMap()
+        {
+            Paths = new List<UnidirectionalPath<T>>();
+        }
+
+        public static PathMap<T> Construct()
+        {
+            return new PathMap<T>();
+        }
+
+        public void AddPath(T origin, T destination, Func<bool> condition = null)
+        {
+            Paths.Add(UnidirectionalPath<T>.Construct(origin, destination));
+        }
+
+        public void Path(UnidirectionalPath<T> path)
+        {
+            Paths.Add(path);
+        }
+
+        public IEnumerable<T> DestinationsFor(T origin)
+        {
+            return Paths
+                .Where(p => p.Origin.Equals(origin))
+                .Select(p => p.Destination);
+        }
+    }
+
 
     public static class Node2Extensions
     {
