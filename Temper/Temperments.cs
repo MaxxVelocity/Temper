@@ -7,11 +7,15 @@ namespace Temper
         Asleep,
         Idle,
         Alerted,
+        Seeking,
         Following,
         Attacking,
         Defending,
         Protecting,
         Retreating,
-        Paniced,
+        Panic,
+        Enraged,
+        Erratic,
+        Recovering
     }
 }

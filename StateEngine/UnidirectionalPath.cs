@@ -10,13 +10,16 @@ namespace StateEngine
 
         public Func<bool> Condition { get; internal protected set; }
 
-        public static UnidirectionalPath<T> Construct(T origin, T destination, Func<bool> conditon = null)
+        public int Priority { get; private set; }
+
+        public static UnidirectionalPath<T> Construct(T origin, T destination, int priority = 1, Func<bool> condition = null)
         {
             return new UnidirectionalPath<T>()
             {
                 Origin = origin,
                 Destination = destination,
-                Condition = conditon
+                Condition = condition,
+                Priority = priority
             };
         }
     }

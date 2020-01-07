@@ -5,7 +5,7 @@ using System.Linq;
 namespace AttitudeTests
 {
     [TestClass]
-    public class UnitTest1
+    public class NodeTests
     {
         [TestMethod]
         public void EverythingDies()
