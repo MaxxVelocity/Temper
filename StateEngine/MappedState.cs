@@ -3,40 +3,83 @@ using System.Linq;
 
 namespace StateEngine
 {
+    /// <summary>
+    /// Represents an instance of a status within a defined map.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class MappedState<T> where T : System.Enum
     {
-        public MappedState<T> PathOf(UnidirectionalPath<T> path)
-        {
-            paths.Path(path);
-            return this;
-        }
-
         public T Status { get; protected set; }
 
         private PathMap<T> paths { get; set; }
+
+        private List<ConditionalPath<T>> PathsFromCurrentStatus { get; set; }
+
+        private PathsFromCurrentState Current;
+
+        private uint UpdateTicks = 0;
 
         public static MappedState<T> Construct(T initialState)
         {
             return new MappedState<T>(initialState);
         }
 
-        private MappedState(T initialState)
+        public MappedState<T> PathOf(ConditionalPath<T> path)
+        {
+            paths.Path(path);
+            return this;
+        }
+
+        public MappedState<T> PathOf(ExpiryPath<T> path)
+        {
+            paths.Path(path);
+            return this;
+        }
+
+
+        public void Update()
+        {
+            UpdateTicks = UpdateTicks++;
+
+            this.Current = this.Current ?? PathsFromCurrentState.Construct(this.Status, this.paths);
+
+            // Evaluate transition to conditional paths
+            foreach (var path in Current.ConditionalPaths.OrderBy(n => n.Priority))
+            {
+                if (path.Condition.Invoke())
+                {
+                    this.Status = path.Destination;
+
+                    return;
+                }
+            }
+
+            // Evaluate transition to expiry paths
+            if(this.Current.ExpiryPath.Countdown >= this.UpdateTicks)
+            {
+                this.Status = this.Current.ExpiryPath.Destination;
+            }
+        }
+
+        protected MappedState(T initialState)
         {
             paths = PathMap<T>.Construct();
             Status = initialState;
         }
 
-        public void Update()
+        private class PathsFromCurrentState
         {
-            var possibleDestinations = new List<UnidirectionalPath<T>>();
+            public List<ConditionalPath<T>> ConditionalPaths { get; private set; }
 
-            foreach (var path in this.paths.Paths.Where(n => n.Origin.Equals(Status)))
+            public ExpiryPath<T> ExpiryPath { get; private set; }
+
+            public static PathsFromCurrentState Construct(T state, PathMap<T> map)
             {
-                if (path.Condition.Invoke())
+                return new PathsFromCurrentState()
                 {
-                    this.Status = path.Destination;
-                    return;
-                }
+                    ConditionalPaths = map.Paths?.Where(n => n.Origin.Equals(state))?.ToList(),
+                    ExpiryPath = map.ExpiryPaths?.Single(n => n.Origin.Equals(state))
+                };
             }
         }
     }
