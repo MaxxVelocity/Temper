@@ -49,7 +49,7 @@ namespace StateEngine
                 if (path.Condition.Invoke())
                 {
                     this.Status = path.Destination;
-
+                    this.Current = null;
                     return;
                 }
             }
@@ -58,6 +58,7 @@ namespace StateEngine
             if(this.Current.ExpiryPath.Countdown >= this.UpdateTicks)
             {
                 this.Status = this.Current.ExpiryPath.Destination;
+                this.Current = null;
             }
         }
 
@@ -78,7 +79,7 @@ namespace StateEngine
                 return new PathsFromCurrentState()
                 {
                     ConditionalPaths = map.Paths?.Where(n => n.Origin.Equals(state))?.ToList(),
-                    ExpiryPath = map.ExpiryPaths?.Single(n => n.Origin.Equals(state))
+                    ExpiryPath = map.ExpiryPaths?.SingleOrDefault(n => n.Origin.Equals(state))
                 };
             }
         }

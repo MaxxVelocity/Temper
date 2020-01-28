@@ -79,7 +79,10 @@ namespace AttitudeTests
                 summoned = true;
             }
 
-            public bool HasBeenSummoned() { return summoned; }
+            public bool HasBeenSummoned()
+            {
+                return summoned;
+            }
 
             private bool summoned = false;
 
@@ -94,13 +97,11 @@ namespace AttitudeTests
                         PathMapTests.Life.Alive
                             .ExpiresTo(PathMapTests.Life.Dead, 1));
 
-                Func<bool> summonDelegate = ()=> @this.HasBeenSummoned();
-
                 @this.Life
                     .PathOf(
                         PathMapTests.Life.Dead
                             .LeadsTo(PathMapTests.Life.Undead)
-                            .When2(() => { return @this.summoned == true; }));
+                            .When(@this.HasBeenSummoned));
 
                 return @this;
             }
