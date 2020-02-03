@@ -10,39 +10,14 @@ namespace AttitudeTests
 {
     [TestClass]
     public class PathMapTests
-    {
-        
-        //[TestMethod]
-        //public void FactoryTest()
-        //{
-        //    var factory = new NodeFactory<Life>();
-
-        //    var instance = factory.Construct(Life.Alive);
-
-        //    Assert.IsNotNull(instance);
-        //}
-
+    {      
         [TestMethod]
-        public void UnidirectionalPathTest()
+        public void TransitionPathTest()
         {
-            var path = UnidirectionalPath<Life>.Construct(Life.Alive, Life.Dead);
+            var path = TransitionPath<Life>.Construct(Life.Alive, Life.Dead);
 
             Assert.IsNotNull(path);
         }
-
-        //[TestMethod]
-        //public void PathMapTest()
-        //{
-        //    var map = PathMap<Life>.Construct();
-
-        //    map.AddPath(Life.Alive, Life.Dead);
-
-        //    Assert.IsNotNull(map);
-
-        //    var destinations = map.Paths
-        //        .Where(p => p.Origin == Life.Alive)
-        //        .Select(p => p.Destination);
-        //}
 
         [TestMethod]
         public void ToLiveIsToDie()
@@ -54,27 +29,6 @@ namespace AttitudeTests
             Assert.IsTrue(courseOfLife
                     .DestinationsFor(Life.Alive)
                     .CanOnlyLeadTo(Life.Dead));
-        }
-
-        [TestMethod]
-        public void NowImFeelingZombified()
-        {
-            var me = Child.IsBorn();
-
-            Assert.IsTrue(
-                me.Life.Status.Equals(Life.Alive));
-
-            me.LifeUpdate();
-
-            Assert.IsTrue(
-                me.Life.Status.Equals(Life.Dead));
-
-            me.SummonedByLichKing = true;
-
-            me.LifeUpdate();
-
-            Assert.IsTrue(
-                me.Life.Status.Equals(Life.Undead));
         }
 
         [TestMethod]
@@ -93,48 +47,72 @@ namespace AttitudeTests
         }
 
         [TestMethod]
-        public void DeathBeforeDishonor()
+        public void NowImFeelingZombified()
         {
+            var arthas = PotentialDeathKnight.IsBorn();
+            var uther = PotentialDeathKnight.IsBorn();
 
+            Assert.IsTrue(
+                arthas.Life.Status.Equals(Life.Alive));
+            Assert.IsTrue(
+                uther.Life.Status.Equals(Life.Alive));
+
+            arthas.Life.Update();
+            uther.Life.Update();
+
+            Assert.IsTrue(
+                arthas.Life.Status.Equals(Life.Dead));
+            Assert.IsTrue(
+                uther.Life.Status.Equals(Life.Dead));
+
+            arthas.SummonedByLichKing();
+            // Uther is not summoned by the Lich King because he's not a douche
+
+            arthas.Life.Update();
+            uther.Life.Update();
+
+            Assert.IsTrue(
+                arthas.Life.Status.Equals(Life.Undead));
+            Assert.IsTrue(
+                uther.Life.Status.Equals(Life.Dead));
         }
 
-        private interface IExpires
+        private class PotentialDeathKnight
         {
-            bool Expired();
-        }
+            public bool HasBeenSummoned() => summoned;
 
-        private class Child
-        {
-            private int UpdateTicks = 0;
-
-            public void LifeUpdate()
-            {
-                UpdateTicks++;
-                Life.Update();
-            }
-
-            public bool SummonedByLichKing { get; set; }
+            private bool summoned = false;
 
             public MappedState<Life> Life { get; private set; }
 
-            public static Child IsBorn()
+            public static PotentialDeathKnight IsBorn()
             {              
-                var @this = new Child();
-
-                @this.Life = MappedState<Life>.Construct(PathMapTests.Life.Alive)
-                    .PathOf(
-                        PathMapTests.Life.Alive
-                            .LeadsTo(PathMapTests.Life.Dead)
-                            .When(@this.Expired))
-                    .PathOf(
-                        PathMapTests.Life.Dead
-                            .LeadsTo(PathMapTests.Life.Undead)
-                            .When(() => @this.SummonedByLichKing));
-
+                var @this = new PotentialDeathKnight();
+                @this.Life = DeathKnightLifeStateMap(@this);
                 return @this;
             }
 
-            public bool Expired() { return UpdateTicks > 0; }
+            public void LifeUpdate()
+            {
+                Life.Update();
+            }
+
+            public void SummonedByLichKing()
+            {
+                summoned = true;
+            }
+
+            public static MappedState<Life> DeathKnightLifeStateMap(PotentialDeathKnight subject)
+            {
+                return MappedState<Life>.Construct(PathMapTests.Life.Alive)
+                    .PathOf(
+                        PathMapTests.Life.Alive
+                            .ExpiresTo(PathMapTests.Life.Dead, 1))
+                    .PathOf(
+                        PathMapTests.Life.Dead
+                            .LeadsTo(PathMapTests.Life.Undead)
+                            .When(subject.HasBeenSummoned));
+            }
         }
 
         private class RomanSoldier
