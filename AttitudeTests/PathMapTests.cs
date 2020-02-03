@@ -49,26 +49,49 @@ namespace AttitudeTests
         [TestMethod]
         public void NowImFeelingZombified()
         {
-            var arthas = DeathKnight.IsBorn();
+            var arthas = PotentialDeathKnight.IsBorn();
+            var uther = PotentialDeathKnight.IsBorn();
 
             Assert.IsTrue(
                 arthas.Life.Status.Equals(Life.Alive));
+            Assert.IsTrue(
+                uther.Life.Status.Equals(Life.Alive));
 
-            arthas.LifeUpdate();
+            arthas.Life.Update();
+            uther.Life.Update();
 
             Assert.IsTrue(
                 arthas.Life.Status.Equals(Life.Dead));
+            Assert.IsTrue(
+                uther.Life.Status.Equals(Life.Dead));
 
             arthas.SummonedByLichKing();
+            // Uther is not summoned by the Lich King because he's not a douche
 
-            arthas.LifeUpdate();
+            arthas.Life.Update();
+            uther.Life.Update();
 
             Assert.IsTrue(
                 arthas.Life.Status.Equals(Life.Undead));
+            Assert.IsTrue(
+                uther.Life.Status.Equals(Life.Dead));
         }
 
-        private class DeathKnight
+        private class PotentialDeathKnight
         {
+            public bool HasBeenSummoned() => summoned;
+
+            private bool summoned = false;
+
+            public MappedState<Life> Life { get; private set; }
+
+            public static PotentialDeathKnight IsBorn()
+            {              
+                var @this = new PotentialDeathKnight();
+                @this.Life = DeathKnightLifeStateMap(@this);
+                return @this;
+            }
+
             public void LifeUpdate()
             {
                 Life.Update();
@@ -79,40 +102,18 @@ namespace AttitudeTests
                 summoned = true;
             }
 
-            public bool HasBeenSummoned()
+            public static MappedState<Life> DeathKnightLifeStateMap(PotentialDeathKnight subject)
             {
-                return summoned;
-            }
-
-            private bool summoned = false;
-
-            public MappedState<Life> Life { get; private set; }
-
-            public static DeathKnight IsBorn()
-            {              
-                var @this = new DeathKnight();
-
-                @this.Life = MappedState<Life>.Construct(PathMapTests.Life.Alive)
+                return MappedState<Life>.Construct(PathMapTests.Life.Alive)
                     .PathOf(
                         PathMapTests.Life.Alive
-                            .ExpiresTo(PathMapTests.Life.Dead, 1));
-
-                @this.Life
+                            .ExpiresTo(PathMapTests.Life.Dead, 1))
                     .PathOf(
                         PathMapTests.Life.Dead
                             .LeadsTo(PathMapTests.Life.Undead)
-                            .When(@this.HasBeenSummoned));
-
-                return @this;
+                            .When(subject.HasBeenSummoned));
             }
         }
-
-        [TestMethod]
-        public void DeathBeforeDishonor()
-        {
-
-        }
-
 
         private class RomanSoldier
         {

@@ -4,7 +4,7 @@ using System.Linq;
 namespace StateEngine
 {
     /// <summary>
-    /// Represents an instance of a status within a defined map.
+    /// Represents an instance of a status within a defined map. Normally such instance would be an attribute property of an entity.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class MappedState<T> where T : System.Enum
@@ -13,11 +13,11 @@ namespace StateEngine
 
         private PathMap<T> paths { get; set; }
 
-        private List<ConditionalPath<T>> PathsFromCurrentStatus { get; set; }
-
         private PathsFromCurrentState Current;
 
-        private uint UpdateTicks = 0;
+        private uint lifetimeTicks = 0;
+
+        private uint currentStateTicks = 0;
 
         public static MappedState<T> Construct(T initialState)
         {
@@ -36,10 +36,13 @@ namespace StateEngine
             return this;
         }
 
-
+        /// <summary>
+        /// Evaluates transition paths from the current state and assigns a new current state if a path condition is met
+        /// </summary>
         public void Update()
         {
-            UpdateTicks = UpdateTicks++;
+            lifetimeTicks++;
+            currentStateTicks++;
 
             this.Current = this.Current ?? PathsFromCurrentState.Construct(this.Status, this.paths);
 
@@ -50,14 +53,18 @@ namespace StateEngine
                 {
                     this.Status = path.Destination;
                     this.Current = null;
+                    this.currentStateTicks = 0;
                     return;
                 }
             }
 
+            //TODO: consider flexibility that would allow an expiry transition to take priority
+
             // Evaluate transition to expiry paths
-            if(this.Current.ExpiryPath.Countdown >= this.UpdateTicks)
+            if(this.Current.ExpiryPath?.Countdown >= this.currentStateTicks)
             {
                 this.Status = this.Current.ExpiryPath.Destination;
+                this.currentStateTicks = 0;
                 this.Current = null;
             }
         }

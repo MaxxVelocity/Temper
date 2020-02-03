@@ -5,6 +5,10 @@ using System.Text;
 
 namespace StateEngine
 {
+
+    //TODO: make possible to assign same map to multiple object instances.
+    // This requires 
+
     public class PathMap<T> where T : System.Enum
     {
         public List<ConditionalPath<T>> Paths { get; }
@@ -35,6 +39,7 @@ namespace StateEngine
 
         public void Path(ExpiryPath<T> path)
         {
+            EnforceUniqueExpiry(path.Origin);
             ExpiryPaths.Add(path);
         }
 
