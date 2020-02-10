@@ -20,6 +20,23 @@ namespace AttitudeTests
         }
 
         [TestMethod]
+        public void ConditionDurationPathTest()
+        {
+            var toggle = false;
+
+            var path = ConditionalPath<Life>.Construct(Life.Alive, Life.Dead);
+            var path2 = ConditionDurationPath<Life>.Construct(Life.Alive, Life.Dead, ()=> toggle, 2);
+
+            TransitionPath<Life> temp = path;
+
+            var resolvedType = temp as ConditionalPath<Life>;
+
+            Assert.IsNotNull(resolvedType);
+
+            //var List = new List<TransitionPath<Life>> { { (TransitionPath<Life>)path }, { (TransitionPath<Life>)path2 } };
+        }
+
+        [TestMethod]
         public void ToLiveIsToDie()
         {
             var courseOfLife = PathMap<Life>.Construct();
@@ -31,6 +48,7 @@ namespace AttitudeTests
                     .CanOnlyLeadTo(Life.Dead));
         }
 
+        [Ignore("The 'conditional path priority' concept is being suspended for now.")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void ThereCanBeOnlyOneTopPriority()
@@ -60,13 +78,14 @@ namespace AttitudeTests
             arthas.Life.Update();
             uther.Life.Update();
 
+            // Both have died from old age
             Assert.IsTrue(
                 arthas.Life.Status.Equals(Life.Dead));
             Assert.IsTrue(
                 uther.Life.Status.Equals(Life.Dead));
 
             arthas.SummonedByLichKing();
-            // Uther is not summoned by the Lich King because he's not a douche
+            // Uther is not summoned by the Lich King because he's not a jerk
 
             arthas.Life.Update();
             uther.Life.Update();
@@ -79,11 +98,11 @@ namespace AttitudeTests
 
         private class PotentialDeathKnight
         {
+            public MappedState<Life> Life { get; private set; }
+
             public bool HasBeenSummoned() => summoned;
 
             private bool summoned = false;
-
-            public MappedState<Life> Life { get; private set; }
 
             public static PotentialDeathKnight IsBorn()
             {              

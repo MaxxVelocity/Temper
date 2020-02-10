@@ -24,6 +24,14 @@ namespace StateEngine
             return new MappedState<T>(initialState);
         }
 
+        /// <summary>
+        /// Syntactic sugar, constructs new stateful instance.
+        /// </summary>
+        public static MappedState<T> StartsAs(T initialState)
+        {
+            return Construct(initialState);
+        }
+
         public MappedState<T> PathOf(ConditionalPath<T> path)
         {
             paths.Path(path);
@@ -49,24 +57,44 @@ namespace StateEngine
             // Evaluate transition to conditional paths
             foreach (var path in Current.ConditionalPaths.OrderBy(n => n.Priority))
             {
-                if (path.Condition.Invoke())
+                // Attempt to resolve as a durable condition
+                var conditionDurationPath = path as ConditionDurationPath<T>;
+
+                if(!(conditionDurationPath is null))
                 {
-                    this.Status = path.Destination;
-                    this.Current = null;
-                    this.currentStateTicks = 0;
-                    return;
+                    if (currentStateTicks >= conditionDurationPath.DurationThreshold
+                        && conditionDurationPath.Condition.Invoke())
+                    {
+                        DoTransition(path);
+                        return;
+                    }
+                }
+
+                // Resolve as simple condition
+                else
+                {
+                    if (path.Condition.Invoke())
+                    {
+                        DoTransition(path);
+                        return;
+                    }
                 }
             }
 
-            //TODO: consider flexibility that would allow an expiry transition to take priority
-
             // Evaluate transition to expiry paths
-            if(this.Current.ExpiryPath?.Countdown >= this.currentStateTicks)
+            if(this.currentStateTicks >= this.Current.ExpiryPath?.Countdown)
             {
                 this.Status = this.Current.ExpiryPath.Destination;
                 this.currentStateTicks = 0;
                 this.Current = null;
             }
+        }
+
+        private void DoTransition(ConditionalPath<T> path)
+        {
+            this.Status = path.Destination;
+            this.Current = null;
+            this.currentStateTicks = 0;
         }
 
         protected MappedState(T initialState)
