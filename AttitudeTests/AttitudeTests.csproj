@@ -49,6 +49,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AffectionTempermentDemo.cs" />
+    <Compile Include="AggroTempermentDemo.cs" />
     <Compile Include="PathMapTests.cs" />
     <Compile Include="NodeTests.cs" />
   </ItemGroup>

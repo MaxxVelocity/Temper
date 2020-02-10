@@ -26,14 +26,10 @@ namespace StateEngine
             return new PathMap<T>();
         }
 
-        public void AddPath(T origin, T destination, Func<bool> condition = null)
-        {
-            Paths.Add(ConditionalPath<T>.Construct(origin, destination));
-        }
-
         public void Path(ConditionalPath<T> path)
         {
-            EnforceUniquePriority(path.Origin, path.Priority);
+            //TODO: re-evaluate the concept of priority. Mutually exclusive conditions might be preferable.
+            //EnforceUniquePriority(path.Origin, path.Priority);
             Paths.Add(path);
         }
 
