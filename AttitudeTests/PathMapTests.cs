@@ -1,10 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StateEngine;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AttitudeTests
 {
@@ -32,8 +28,6 @@ namespace AttitudeTests
             var resolvedType = temp as ConditionalPath<Life>;
 
             Assert.IsNotNull(resolvedType);
-
-            //var List = new List<TransitionPath<Life>> { { (TransitionPath<Life>)path }, { (TransitionPath<Life>)path2 } };
         }
 
         [TestMethod]

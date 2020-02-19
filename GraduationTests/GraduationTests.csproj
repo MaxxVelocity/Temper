@@ -5,11 +5,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{73A1F718-7E88-4088-9F80-07D56F0420A1}</ProjectGuid>
+    <ProjectGuid>{0459A8B7-F061-4FF3-9007-EDF8216B21A6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AttitudeTests</RootNamespace>
-    <AssemblyName>AttitudeTests</AssemblyName>
+    <RootNamespace>GraduationTests</RootNamespace>
+    <AssemblyName>GraduationTests</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -49,11 +49,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AffectionTempermentDemo.cs" />
-    <Compile Include="AggroTempermentDemo.cs" />
-    <Compile Include="GraduationTests.cs" />
-    <Compile Include="PathMapTests.cs" />
-    <Compile Include="NodeTests.cs" />
+    <Compile Include="UnitTest1.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -63,17 +60,6 @@
       <Project>{c3dd978d-0581-44cd-9818-7cd95f3eabd4}</Project>
       <Name>GraduatedResolution</Name>
     </ProjectReference>
-    <ProjectReference Include="..\StateEngine\StateEngine.csproj">
-      <Project>{340BFB69-0588-4F7B-83C5-17A78B216CED}</Project>
-      <Name>StateEngine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Temper\Attitude.csproj">
-      <Project>{daf918ac-7a38-4d14-891e-db853b341f5e}</Project>
-      <Name>Attitude</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

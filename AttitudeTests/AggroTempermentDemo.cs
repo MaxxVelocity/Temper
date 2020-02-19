@@ -75,12 +75,19 @@ namespace AttitudeTests
             Assert.AreEqual(AggroTemperment.Searching, guard.Aggro.Status);
         }
 
+        [TestMethod]
+        public void WhoGoesThere_ProximityCausesAggro()
+        {
+
+        }
+
         private class AggroActor
         {
             public MappedState<AggroTemperment> Aggro { get; private set; }
 
             public bool TargetIsTracked() => targetIsBeingTracked;
 
+            // Don't need an explicit negative method, we can use lambda expression on the positive
             public bool TargetIsNotTracked() => !targetIsBeingTracked;
 
             public IAggroTarget AggroTarget = null;
