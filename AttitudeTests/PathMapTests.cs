@@ -31,34 +31,6 @@ namespace AttitudeTests
         }
 
         [TestMethod]
-        public void ToLiveIsToDie()
-        {
-            var courseOfLife = PathMap<Life>.Construct();
-
-            courseOfLife.Path(Life.Alive.LeadsTo(Life.Dead));
-
-            Assert.IsTrue(courseOfLife
-                    .DestinationsFor(Life.Alive)
-                    .CanOnlyLeadTo(Life.Dead));
-        }
-
-        [Ignore("The 'conditional path priority' concept is being suspended for now.")]
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void ThereCanBeOnlyOneTopPriority()
-        {
-            MappedState<Life>.Construct(PathMapTests.Life.Alive)
-                .PathOf(
-                    PathMapTests.Life.Alive
-                        .LeadsTo(PathMapTests.Life.Dead)
-                        .When(() => true))
-                .PathOf(
-                    PathMapTests.Life.Alive
-                        .LeadsTo(PathMapTests.Life.Undead)
-                        .When(() => true));
-        }
-
-        [TestMethod]
         public void NowImFeelingZombified()
         {
             var arthas = PotentialDeathKnight.IsBorn();
@@ -90,11 +62,12 @@ namespace AttitudeTests
                 uther.Life.Status.Equals(Life.Dead));
         }
 
+
         private class PotentialDeathKnight
         {
-            public MappedState<Life> Life { get; private set; }
+            public Determinator<Life> Life { get; private set; }
 
-            public bool HasBeenSummoned() => summoned;
+            public bool IsReanimated() => summoned;
 
             private bool summoned = false;
 
@@ -105,58 +78,22 @@ namespace AttitudeTests
                 return @this;
             }
 
-            public void LifeUpdate()
-            {
-                Life.Update();
-            }
-
             public void SummonedByLichKing()
             {
                 summoned = true;
             }
 
-            public static MappedState<Life> DeathKnightLifeStateMap(PotentialDeathKnight subject)
+            public static Determinator<Life> DeathKnightLifeStateMap(PotentialDeathKnight subject)
             {
-                return MappedState<Life>.Construct(PathMapTests.Life.Alive)
+                return Determinator<Life>.StartsAs(PathMapTests.Life.Alive)
                     .PathOf(
                         PathMapTests.Life.Alive
                             .ExpiresTo(PathMapTests.Life.Dead, 1))
                     .PathOf(
                         PathMapTests.Life.Dead
                             .LeadsTo(PathMapTests.Life.Undead)
-                            .When(subject.HasBeenSummoned));
+                            .When(subject.IsReanimated));
             }
-        }
-
-        private class RomanSoldier
-        {
-            public MappedState<SoldiersLife> Life { get; private set; }
-
-            private int Health = 1;
-
-            public static RomanSoldier IsBorn()
-            {
-                var @this = new RomanSoldier();
-
-                @this.Life = MappedState<SoldiersLife>.Construct(PathMapTests.SoldiersLife.Alive)
-                    .PathOf(
-                        SoldiersLife.Alive
-                            .LeadsTo(SoldiersLife.Dead)
-                            .When(() => @this.Health < 1))
-                    .PathOf(
-                        SoldiersLife.Alive
-                            .LeadsTo(SoldiersLife.Dishonored)
-                            .When(() => @this.Health < 1));
-
-                return @this;
-            }
-        }
-
-        public enum SoldiersLife
-        {
-            Alive,
-            Dead,
-            Dishonored
         }
 
         public enum Life

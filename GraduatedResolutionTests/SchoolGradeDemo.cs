@@ -11,7 +11,7 @@ namespace GraduatedResolutionTests
         {
             var GradeF = Grade<int>.WithLowerThreshold(0);
 
-            var gradeScale = Graduation<int>.Construct(
+            var gradeScale = Graduation<int>.ConsistingOf(
                 SchoolGradeScale.A,
                 SchoolGradeScale.B,
                 SchoolGradeScale.C,

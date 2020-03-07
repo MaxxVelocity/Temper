@@ -1,35 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace StateEngine
 {
-
     //TODO: make possible to assign same map to multiple object instances.
-    // This requires 
 
-    public class PathMap<T> where T : System.Enum
+    public class Map<T> where T : System.Enum
     {
         public List<ConditionalPath<T>> Paths { get; }
 
         public List<ExpiryPath<T>> ExpiryPaths { get; }
 
-        private PathMap()
+        private Map()
         {
             Paths = new List<ConditionalPath<T>>();
             ExpiryPaths = new List<ExpiryPath<T>>();
         }
 
-        public static PathMap<T> Construct()
+        public static Map<T> Construct()
         {
-            return new PathMap<T>();
+            return new Map<T>();
+        }
+
+        public Map<T> PathOf(ConditionalPath<T> path)
+        {
+            Path(path);
+            return this;
+        }
+
+        public Map<T> PathOf(ExpiryPath<T> path)
+        {
+            Path(path);
+            return this;
         }
 
         public void Path(ConditionalPath<T> path)
         {
-            //TODO: re-evaluate the concept of priority. Mutually exclusive conditions might be preferable.
-            //EnforceUniquePriority(path.Origin, path.Priority);
             Paths.Add(path);
         }
 
@@ -39,12 +46,11 @@ namespace StateEngine
             ExpiryPaths.Add(path);
         }
 
-        private void EnforceUniquePriority(T origin, uint priority)
+        public IEnumerable<T> DestinationsFor(T origin)
         {
-              if (Paths.Any(n => n.Origin.Equals(origin) && n.Priority.Equals(priority)))
-            {
-                throw new ArgumentException($"The map for type {typeof(T)} already includes a path from {origin} with a priority of {priority}.");
-            }
+            return Paths
+                .Where(p => p.Origin.Equals(origin))
+                .Select(p => p.Destination);
         }
 
         private void EnforceUniqueExpiry(T origin)
@@ -55,11 +61,13 @@ namespace StateEngine
             }
         }
 
-        public IEnumerable<T> DestinationsFor(T origin)
+        // Priority is being abandoned for now. Conditions should be broad enough to include competing factors in the evaluation criteria. 
+        private void EnforceUniquePriority(T origin, uint priority)
         {
-            return Paths
-                .Where(p => p.Origin.Equals(origin))
-                .Select(p => p.Destination);
+              if (Paths.Any(n => n.Origin.Equals(origin) && n.Priority.Equals(priority)))
+            {
+                throw new ArgumentException($"The map for type {typeof(T)} already includes a path from {origin} with a priority of {priority}.");
+            }
         }
     }
 }

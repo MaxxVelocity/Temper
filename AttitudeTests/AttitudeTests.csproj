@@ -47,13 +47,19 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AffectionTempermentDemo.cs" />
+    <Compile Include="AggroActor.cs" />
+    <Compile Include="AggroConcepts.cs" />
     <Compile Include="AggroTempermentDemo.cs" />
     <Compile Include="GraduationTests.cs" />
     <Compile Include="PathMapTests.cs" />
     <Compile Include="NodeTests.cs" />
+    <Compile Include="ProximityAggroDemo.cs" />
+    <Compile Include="TraversingTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

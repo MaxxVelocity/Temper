@@ -60,7 +60,7 @@ namespace AttitudeTests
 
         public class AffectionateActor
         {           
-            public MappedState<AffectionTemper> Affection { get; private set; }
+            public Determinator<AffectionTemper> Affection { get; private set; }
 
             private bool hasBeenIntroduced;
 
@@ -102,9 +102,9 @@ namespace AttitudeTests
             }
 
             // This is more complex than needed; the graph is linear and can be represented as a Graduation
-            private MappedState<AffectionTemper> AffectionateStateEngine()
+            private Determinator<AffectionTemper> AffectionateStateEngine()
             {
-                return MappedState<AffectionTemper>.StartsAs(AffectionTemper.Unaware)
+                return Determinator<AffectionTemper>.StartsAs(AffectionTemper.Unaware)
                     .PathOf(
                         AffectionTemper.Unaware
                             .LeadsTo(AffectionTemper.Indifferent)

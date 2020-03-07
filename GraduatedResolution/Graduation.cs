@@ -73,10 +73,12 @@ namespace GraduatedResolution
         {
             var graduation = new Graduation<T>();
 
-            foreach (var grade in grades)
-            {
-                graduation.Grades.Add(grade.Threshold, grade);
-            }
+            Array.ForEach(grades, n => graduation.Grades.Add(n.Threshold, n));
+
+            //foreach (var grade in grades)
+            //{
+            //    graduation.Grades.Add(grade.Threshold, grade);
+            //}
 
             return graduation;
         }

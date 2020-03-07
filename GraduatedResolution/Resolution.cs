@@ -5,16 +5,6 @@ namespace GraduatedResolution
 {
     public static class Resolution
     {
-        public static Grade<T> AsGradeIn<T>(this T value, Graduation<T> graduation, Grade<T> defaultGrade) where T: IComparable
-        {
-            foreach(var grade in graduation.Grades.OrderBy(n => n.Key))
-            {
-                if (value.CompareTo(grade.Key) >= 0) return grade.Value;
-            }
-
-            return defaultGrade;
-        }
-
         public static MaybeResolvedGrade<T> AsGradeIn<T>(this T value, Graduation<T> graduation) where T : IComparable
         {
             if (!graduation.Grades.Any(n => value.IsGreaterThanOrEqualTo(n.Key)))
@@ -31,22 +21,18 @@ namespace GraduatedResolution
 
         public static Grade<T> AsGradeIn<T>(this T value, GraduationWithDefault<T> graduation) where T : IComparable
         {
-            if (!graduation.Grades.Any(n => value.IsGreaterThanOrEqualTo(n.Key)))
-            {
-                return graduation.Default;
-            }
-
-            return
-                graduation.Grades
+            return graduation.Grades.Any(n => value.IsGreaterThanOrEqualTo(n.Key))
+                 ? graduation.Grades
                     .OrderByDescending(n => n.Key)
-                    .First(n => value.IsGreaterThanOrEqualTo(n.Key)).Value;
+                    .First(n => value.IsGreaterThanOrEqualTo(n.Key)).Value
+                : graduation.Default;
         }
 
         public static Grade<T> WithDefaultGrade<T>(this MaybeResolvedGrade<T> maybe, Grade<T> defaultGrade) where T : IComparable
         {
-            if (maybe.HasValue) { return maybe.Value; }
-
-            return defaultGrade;
+            return maybe.HasValue 
+                ? maybe.Value 
+                : defaultGrade;
         }
 
         public static GraduationWithDefault<T> WithDefault<T>(this Graduation<T> graduation, Grade<T> defaultGrade) where T : IComparable
@@ -56,7 +42,8 @@ namespace GraduatedResolution
 
         private static bool IsGreaterThanOrEqualTo(this IComparable value1, IComparable value2)
         {
-            return value1.CompareTo(value2) >= 0;
+            var x = value1.CompareTo(value2) >= 0;
+            return x;
         }
 
 

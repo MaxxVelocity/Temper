@@ -7,55 +7,64 @@ namespace StateEngine
     /// Represents an instance of a status within a defined map. Normally such instance would be an attribute property of an entity.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class MappedState<T> where T : System.Enum
+    public class Determinator<T> where T : System.Enum
     {
         public T Status { get; protected set; }
 
-        private PathMap<T> paths { get; set; }
+        private Map<T> paths { get; set; }
 
-        private PathsFromCurrentState Current;
-
-        private uint lifetimeTicks = 0;
+        private PotentialTransitions CurrentPotential;
 
         private uint currentStateTicks = 0;
 
-        public static MappedState<T> Construct(T initialState)
+        /// <summary>
+        /// Constructs new instance.
+        /// </summary>
+        public static Determinator<T> Construct(T initialState)
         {
-            return new MappedState<T>(initialState);
+            return new Determinator<T>(initialState);
         }
 
         /// <summary>
-        /// Syntactic sugar, constructs new stateful instance.
+        /// Constructs new instance.
         /// </summary>
-        public static MappedState<T> StartsAs(T initialState)
+        public static Determinator<T> StartsAs(T initialState)
         {
             return Construct(initialState);
         }
 
-        public MappedState<T> PathOf(ConditionalPath<T> path)
-        {
-            paths.Path(path);
-            return this;
-        }
-
-        public MappedState<T> PathOf(ExpiryPath<T> path)
+        /// <summary>
+        /// Constructs a new path in the underlying map.
+        /// </summary>
+        public Determinator<T> PathOf(ConditionalPath<T> path)
         {
             paths.Path(path);
             return this;
         }
 
         /// <summary>
-        /// Evaluates transition paths from the current state and assigns a new current state if a path condition is met
+        /// Constructs a new path in the underlying map.
+        /// </summary>
+        public Determinator<T> PathOf(ExpiryPath<T> path)
+        {
+            paths.Path(path);
+            return this;
+        }
+
+        /// <summary>
+        /// Evaluates transition paths from the current state and assigns a new current state if a path condition is met. 
+        /// The order of resolution is Durable > Conditional > Expiry.
         /// </summary>
         public void Update()
         {
-            lifetimeTicks++;
             currentStateTicks++;
 
-            this.Current = this.Current ?? PathsFromCurrentState.Construct(this.Status, this.paths);
+            // Construct the current potential transition aggregate upon the first update
+            this.CurrentPotential = this.CurrentPotential 
+                ?? PotentialTransitions.Construct(this.Status, this.paths);
 
             // Evaluate transition to conditional paths
-            foreach (var path in Current.ConditionalPaths.OrderBy(n => n.Priority))
+            foreach (var path in CurrentPotential.ConditionalPaths.OrderBy(n => n.Priority))
             {
                 // Attempt to resolve as a durable condition
                 var conditionDurationPath = path as ConditionDurationPath<T>;
@@ -82,36 +91,42 @@ namespace StateEngine
             }
 
             // Evaluate transition to expiry paths
-            if(this.currentStateTicks >= this.Current.ExpiryPath?.Countdown)
+            if(this.currentStateTicks >= this.CurrentPotential.ExpiryPath?.Countdown)
             {
-                this.Status = this.Current.ExpiryPath.Destination;
+                this.Status = this.CurrentPotential.ExpiryPath.Destination;
                 this.currentStateTicks = 0;
-                this.Current = null;
+
+                //TODO: point to a specific construct instead of NULL
+                this.CurrentPotential = null;
             }
+        }
+
+        protected Determinator(T initialState)
+        {
+            paths = Map<T>.Construct();
+            Status = initialState;
         }
 
         private void DoTransition(ConditionalPath<T> path)
         {
             this.Status = path.Destination;
-            this.Current = null;
+            this.CurrentPotential = null;
             this.currentStateTicks = 0;
         }
 
-        protected MappedState(T initialState)
-        {
-            paths = PathMap<T>.Construct();
-            Status = initialState;
-        }
+        private interface IPotentialTransitions { };
 
-        private class PathsFromCurrentState
+        private struct  UnresolvedPotential : IPotentialTransitions { }
+
+        private class PotentialTransitions : IPotentialTransitions
         {
             public List<ConditionalPath<T>> ConditionalPaths { get; private set; }
 
             public ExpiryPath<T> ExpiryPath { get; private set; }
 
-            public static PathsFromCurrentState Construct(T state, PathMap<T> map)
+            public static PotentialTransitions Construct(T state, Map<T> map)
             {
-                return new PathsFromCurrentState()
+                return new PotentialTransitions()
                 {
                     ConditionalPaths = map.Paths?.Where(n => n.Origin.Equals(state))?.ToList(),
                     ExpiryPath = map.ExpiryPaths?.SingleOrDefault(n => n.Origin.Equals(state))

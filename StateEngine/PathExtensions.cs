@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace StateEngine
 {
@@ -29,11 +27,6 @@ namespace StateEngine
         {
             path.Condition = condition;
             return path;
-        }
-
-        public static bool CanOnlyLeadTo<T>(this IEnumerable<T> paths, T destination) where T : System.Enum
-        {
-            return paths.Count(p => p.Equals(destination)) == 1;
         }
     }
 }
