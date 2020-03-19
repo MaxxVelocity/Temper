@@ -16,7 +16,7 @@ namespace AttitudeTests
         {
             var traverse = Traverse<ShipboardLocations>.ForMap(ShipMap.Definition());
             Assert.IsNotNull(traverse);
-
+            Assert.IsTrue(traverse.Destinations.Count().Equals(4));
 
         }
     }
