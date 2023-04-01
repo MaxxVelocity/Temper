@@ -14,9 +14,11 @@ namespace AttitudeTests
         [TestMethod]
         public void CanTraverse()
         {
-            var traverse = Traverse<ShipboardLocations>.ForMap(ShipMap.Definition());
+            var traverse = Traverse<ShipboardLocations>
+                .ForMap(ShipMap.Definition())
+                .StartingAt(ShipboardLocations.Forward);
             Assert.IsNotNull(traverse);
-            Assert.IsTrue(traverse.Destinations.Count().Equals(4));
+            Assert.IsTrue(traverse.Destinations.Count().Equals(2));
 
         }
     }
@@ -24,6 +26,8 @@ namespace AttitudeTests
     public static class ShipMap
     {
         private static Map<ShipboardLocations> map;
+
+        public static Map<ShipboardLocations> Map => Definition();
 
         public static Map<ShipboardLocations> Definition()
         {
